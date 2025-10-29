@@ -10,10 +10,11 @@ The accompanying repository can be found [here](https://github.com/3b1b/videos/t
 - 1). get list of words
 - 2). determine the possible bits of information you can get from it based on each possible case
 - 3). get the flatest distribution possible, meaning that every case is almos equiprobable
-- 4). update after the current guess
+- 4). update after current guess
 
 ## steps
 ### Get list
-The list was obtained from [here](https://wordraiders.com/wordle-words/)
+The list was obtained from [here](https://wordraiders.com/wordle-words/) using the [words_scraper.py](/code/words_scraper.py) script and saved in [here](/code/wordle_list.txt)
+### Determine information per word (TODO)
 
-### Determine information per word
+# How to use (TODO)
