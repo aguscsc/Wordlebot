@@ -4,7 +4,7 @@ This repository contains the development of a bot that plays wordle as a persona
 
 The core algorithm and information theory approach for this Wordle solver were heavily inspired by 3Blue1Brown's video, "[Solving Wordle using information theory](https://www.youtube.com/watch?v=v68zYyaEmEA)".(Hugely advice watching it, really fun video)
 
-The accompanying repository can be found [here](https://github.com/3b1b/videos/tree/master/2022/wordle).
+The accompanying repository can be found [here]([https://github.com/3b1b/videos/tree/master/2022/wordle](https://github.com/3b1b/videos/tree/master/_2022/wordle)).
 # Roadmap
 
 - 1). get list of words
