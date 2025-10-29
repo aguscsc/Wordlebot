@@ -14,7 +14,7 @@ The accompanying repository can be found [here]([https://github.com/3b1b/videos/
 
 ## steps
 ### Get list
-The list was obtained from [here](https://wordraiders.com/wordle-words/) using the [words_scraper.py](/code/words_scraper.py) script and saved in [here](/code/wordle_list.txt)
+The list was obtained from [here](https://wordraiders.com/wordle-words/) using the [words_scraper.py](/code/words_scraper.py) script and saved in [here](/code/word_list.txt)
 ### Determine information per word (TODO)
 
 # How to use (TODO)
