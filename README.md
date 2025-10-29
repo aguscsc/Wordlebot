@@ -1,2 +1,2 @@
 # Wordlebot
-This repository contains the development of a wordle bot as a personal project
+This repository contains the development of a bot that plays wordle as a personal project
