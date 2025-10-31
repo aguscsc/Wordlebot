@@ -16,5 +16,20 @@ The accompanying repository can be found [here]([https://github.com/3b1b/videos/
 ### Get list
 The list was obtained from [here](https://wordraiders.com/wordle-words/) using the [words_scraper.py](/code/words_scraper.py) script and saved in [here](/code/word_list.txt)
 ### Determine information per word (TODO)
+Each letter can be grey, green or yellow. Having 5 letters this gives us 243 possible combinations, **BUT** it is important to consider that due to the nature of the game there are five pattterns that can't happen.
 
+- YGGGG
+- GYGGG
+- GGYGG
+- GGGYG
+- GGGGY
+
+This is because having a green letter means that the letter is located at the correct slot, therefore no other letter can take its place. Taking this in consideration a yellow letter can't exist if there isn't yellow or grey present, because it needs a place to go.
+
+Finally, the number of possible casses is given by:
+
+$3^5-5=238$
+
+
+For each word in the word list we have to check each case and determine how much information gives. Then, rank the avg information obtained per word so we can pinpoint the best guess at the moment
 # How to use (TODO)
