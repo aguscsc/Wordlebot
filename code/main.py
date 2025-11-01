@@ -8,7 +8,7 @@ with open("possible_words.txt", 'r') as f:
     guess = [line.strip().lower() for line in f]
 
 
-
+total_answers = len(answers)
 # --- get pattern ---
 def get_pattern(guess, answer):
     pattern = [0] * 5
@@ -40,10 +40,10 @@ def get_pattern(guess, answer):
     # Return as an immutable tuple
     return tuple(pattern)
 # --- information calc ---
-def entropy():
+def entropy(answers):
     max_entropy = 0
     best_guess = "none"
-    total_answers = len(answers)
+    current_answers = len(answers)
     for guess_word in guess:
 
         #here i store how many times i enounter the patterns 0=grey 1=yellow 2=green
@@ -64,7 +64,7 @@ def entropy():
         for group_size in patterns_group.values():
 
             #probability of this pattern
-            p = group_size / total_answers
+            p = group_size / current_answers
 
             #information = -log2(p)
             #shannons entropy = sum(information * p)
@@ -89,15 +89,23 @@ def update(best_guess,pattern,answers):
 # Keep only the words that, when compared with the best_guess, produce the exact same pattern.
     new_answers = [word for word in answers if get_pattern(best_guess, word) == pattern] 
     return new_answers
+
+# --- calculate actual bits of information per guess ---
+def get_bits(answers):
+    a = -log2(len(answers)/total_answers)
+    return a
 # --- Main ---
-while(1):
-    best_guess = entropy()
+best_guess = input("enter your first word (you should start with the word raise, it gives ~5.87bits of information): ")
+while(1): 
     numbers = input("pattern please (grey=0, yellow=1, green=2): ")
     pattern = tuple(map(int, numbers))
     answers = update(best_guess, pattern, answers)
+    actual_information = get_bits(answers)
+    print(answers) #if you want to see your remaining possible answers
+    print(f"this answer gave you {actual_information} bits of information, {len(answers)} words remain\n")
     if len(answers)<=1:
         break
-    #best_guess = entropy()
+    best_guess = entropy(answers)
 print(f"the correct word is {answers}")
 
 
