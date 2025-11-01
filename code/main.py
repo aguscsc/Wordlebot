@@ -11,21 +11,34 @@ with open("possible_words.txt", 'r') as f:
 
 # --- get pattern ---
 def get_pattern(guess, answer):
-    pattern = [0]*5
-    answer_list = list(answer)
-    for a in range(5): 
-        if guess[a]==answer[a]:
-            pattern[a]=2
-            answer_list[a]='1'
-    answer = "".join(answer_list)
-    
-    for i in range(5):    
-        for b in range(5):
-            if guess[i]==answer[b]:
-                pattern[i]=1
+    pattern = [0] * 5
+    # Make a list to "use up" letters
+    answer_letters = list(answer) 
+
+    # First Pass: Find all GREENS (2)
+    #    We must do this first.
+    for i in range(5):
+        if guess[i] == answer[i]:
+            pattern[i] = 2
+            # "Use up" this letter so it can't be matched again
+            answer_letters[i] = None 
+
+    # 3. Second Pass: Find all YELLOWS (1)
+    for i in range(5):
+        # Skip if this position is already green
+        if pattern[i] == 2:
+            continue
+            
+        # Check if the guess letter is ANYWHERE in the
+        # remaining (not None) answer letters
+        if guess[i] in answer_letters:
+            pattern[i] = 1
+            # "Use up" this letter so it can't be used for
+            # another yellow for this same guess letter
+            answer_letters.remove(guess[i])
+
+    # Return as an immutable tuple
     return tuple(pattern)
-
-
 # --- information calc ---
 def entropy():
     max_entropy = 0
@@ -78,12 +91,13 @@ def update(best_guess,pattern,answers):
     return new_answers
 # --- Main ---
 while(1):
-    best_guess =entropy()
+    best_guess = entropy()
     numbers = input("pattern please (grey=0, yellow=1, green=2): ")
     pattern = tuple(map(int, numbers))
     answers = update(best_guess, pattern, answers)
-    if len(answers)==1:
+    if len(answers)<=1:
         break
+    #best_guess = entropy()
 print(f"the correct word is {answers}")
 
 
