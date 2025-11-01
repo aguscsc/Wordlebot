@@ -33,3 +33,10 @@ $3^5-5=238$
 
 For each word in the word list we have to check each case and determine how much information gives. Then, rank the avg information obtained per word so we can pinpoint the best guess at the moment
 # How to use (TODO)
+
+## ✅ TODO   
+- [ ] Simulation
+- [ ] Refine and rank entropy list
+- [ ] gui maybe
+- [ ] applications outside wordle
+---
