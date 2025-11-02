@@ -7,8 +7,10 @@ def main():
     with open("possible_words.txt", 'r') as f:
         guess = [line.strip().lower() for line in f]
     while(1):
-        runs = input("how many runs should the bot do?: ")
-
+        runs = input("how many runs should the bot do? (type ALL for all possilbe answers): ")
+        if runs.lower() == ("ALL").lower():
+            runs = 2330
+            break 
         try:
             runs = int(runs)
             break
@@ -20,9 +22,12 @@ def main():
             list = [line.strip().lower() for line in f]
         best_guess = "raise"
         #choose the answer
-        answer_idx = random.randint(0,len(list))
+        if runs == 2330:
+            answer = list[i]
+        else:
+            answer_idx = random.randint(0,len(list))
+            answer = list[answer_idx]
 
-        answer = list[answer_idx]
         print("the first guess is raise")
         print(f"the word to guess is {answer}\n")
         j = 1
