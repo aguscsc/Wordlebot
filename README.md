@@ -47,11 +47,11 @@ For this section, two ways of implementing entropy to the best guess were applie
 
 Both methods were ran through the 2331 possible answers in which the bot always got to the answer, giving the following results.
 
-[results_all_answers](/pics/top1vstop4.png)
+![results_all_answers](/pics/top1vstop4.png)
 
 It is notable to mention that given the cirscumstances, the top 4 strategy could perform better than the top 1 strategy, for example, the next picture only simulated 50 random cases.
 
-[results_anecdotally](/pics/top1top450.png)
+![results_anecdotally](/pics/top1top450.png)
 
 This is only mentioned anecdotically since neither of the strategies showed clear dominance in lower number of games. 
 
