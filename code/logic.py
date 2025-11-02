@@ -1,5 +1,5 @@
 from math import log2
-
+import random
 # --- get pattern ---
 def get_pattern(guess, answer):
     pattern = [0] * 5
@@ -30,11 +30,19 @@ def get_pattern(guess, answer):
 
     # Return as an immutable tuple
     return tuple(pattern)
+
 # --- information calc ---
+#entropy finds the best guess
 def entropy(answers, guess):
     max_entropy = 0
     best_guess = "none"
     current_answers = len(answers)
+    if current_answers == 2:
+        for guess_word in guess:
+            if get_pattern(guess_word, answers[0]) == (2,2,2,2,2):
+                bullseye = guess_word
+                print(f"50/50 the word is {bullseye}")
+                return bullseye
     for guess_word in guess:
 
         #here i store how many times i enounter the patterns 0=grey 1=yellow 2=green
@@ -70,6 +78,51 @@ def entropy(answers, guess):
     print(f"the best guess is {best_guess}, giving {max_entropy} bits of information on avg")
     return best_guess
 
+#this function takes the top 4 guesses and chooses one at random
+def find_top4(answers, guess):
+    scores = []
+    best_guess = "none"
+    current_answers = len(answers)
+    if current_answers == 2:
+        for guess_word in guess:
+            if get_pattern(guess_word, answers[0]) == (2,2,2,2,2):
+                bullseye = guess_word
+                print(f"50/50 the word is {bullseye}")
+                return bullseye
+    for guess_word in guess:
+        rank = guess_word
+        #here i store how many times i enounter the patterns 0=grey 1=yellow 2=green
+        patterns_group = {}
+
+        #run every possible answer from the list
+        for answer in answers:
+
+            #get the pattern
+            pattern = get_pattern(guess_word,answer)
+
+            #add pattern to the group
+            patterns_group[pattern] = patterns_group.get(pattern,0) + 1
+
+
+        entropy = 0
+
+        for group_size in patterns_group.values():
+
+            #probability of this pattern
+            p = group_size / current_answers
+
+            #information = -log2(p)
+            #shannons entropy = sum(information * p)
+            entropy += p*(-log2(p))
+        scores.append((guess_word, entropy))
+    scores.sort(key=lambda pair: pair[1], reverse=True)
+
+    best_guess_idx = random.randint(0,3)
+    best_guess, info = scores[best_guess_idx]
+    for i in range(4):
+        print(scores[i])
+    print(f"the best guess is {best_guess}, giving {info} bits of information on avg")
+    return best_guess
 # --- debug pattern ---
 def debug_pattern(best_guess, input):
     pattern = get_pattern(best_guess, input)
@@ -98,6 +151,7 @@ def main(answers, guess, total_answers):
         if len(answers)<=1:
             break
         best_guess = entropy(answers, guess)
+        #best_guess = find_top4(answers, guess)
     print(f"the correct word is {answers}")
 if __name__ == "__main__":
     # --- Loading files ---
