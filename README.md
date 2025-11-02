@@ -42,6 +42,8 @@ There's a special case in this approach, when there are only 2 options left a lo
 
 This can be checked running the script [logic.py](/code/logic.py). (there are two methods which will be tested further in this README).
 
+![logic](/pics/logic.png)
+
 ### Simulation
 For this section, two ways of implementing entropy to the best guess were applied, one were the bot always chose the highest entropy option and one where the bot chose one of the top 4.
 
