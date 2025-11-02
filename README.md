@@ -38,7 +38,7 @@ $\[E[x]=p\cdot -log_2(p)\]$ where $p = (times a pattern appears) / (possible ans
 
 Once the entropy for each guess is calculated, it is possible to rank each guess. This process can be iterated until the answer is reached.
 
-There's a special case in this approach, when there are only 2 options left a lot of words will be classified as the highest entropy since there are only two options, meaning that the word only has to provide 1 bit of information to be the best guess. Although this approach works, it "wastes" one guess on going from 2 words to one. To solve this, a new crieria is applied, the bot picks one of the answers and goes for it on a 50/50. This effectively reduced the number of guesses from 4 to 3 in some cases.
+There's a special case in this approach, when there are only 2 options left a lot of words will be classified as the highest entropy since there are only two options, meaning that the word only has to provide 1 bit of information to be the best guess. Although this approach works, it "wastes" one guess on going from 2 words to one. To solve this, a new crieria is applied, the bot picks one of the answers and goes for it on a 50/50. This effectively reduced the number of guesses from 4 to 3 in some cases, avg guesses per word went down from $~3.67$ to $~3.56$ with this.
 
 This can be checked running the script [logic.py](/code/logic.py). (there are two methods which will be tested further in this README).
 
