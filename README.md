@@ -144,5 +144,5 @@ score_top4 = run_simulation(runs, master_answers, guess_list, logic.find_top4)
 ## ✅ TODO  
 - [ ] gui maybe
 - [ ] applications outside wordle
-- [ ] code optimization
+- [ ] code optimization (rust version)
 ---
