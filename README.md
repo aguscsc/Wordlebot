@@ -92,7 +92,7 @@ Clone the repository and cd into the code folder
 
 ```
 git clone https://github.com/aguscsc/Wordlebot
-cd code
+cd code/Pyther
 ```
 Here you'll find scripts containing the main logic of this problem and a simulation to test it.
 
@@ -129,7 +129,7 @@ You can also change the strategy used changing the function used for best_guess
 best_guess = entropy(answers, guess)
 best_guess = find_top4(answers, guess)
 ```
-### simulation.py
+### simulation.py (Not recommended, use Rust instead)
 by running this script you'll be prompted to choose how many cases would you like to simulate. If you choose any number below 2331, cases will be random. If you choose "all", all 2331 cases will be tested on the two strategies. (**Be careful running this as it is not well optimized**)
 ```
 python simulation.py 
@@ -141,8 +141,21 @@ If you want to run the simulation for only one strategy, you just need to commen
 score_top1 = run_simulation(runs, master_answers, guess_list, logic.entropy)
 score_top4 = run_simulation(runs, master_answers, guess_list, logic.find_top4)
 ```
-## ✅ TODO  
-- [ ] gui maybe
-- [ ] applications outside wordle
-- [ ] code optimization (rust version)
----
+### simulation.rs
+As Python resulted to be very slow, simulation.rs and logic.rs were writen as an alternative, the results were the following
+
+|script | Python | Rust |
+| :--- | :--- | :--- |
+| simulation | 4:10 min | 3.95 s |
+| logic | 2.4748 s| 0.0607 s |
+
+![comparison](/pics/comparison.png)
+
+**Running simulation.rs**:
+```
+cd code/rustler
+cargo run --bin simulation
+```
+You'll then be prompted for the number of runs you want to do, if it is less the entire list of possible answers they'll be random.
+
+If you have any suggestions or other applications for this please let me now!
