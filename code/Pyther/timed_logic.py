@@ -158,5 +158,5 @@ if __name__ == "__main__":
     main(answers, guess,total_answers)
     end = time.perf_counter()
 
-    time = end - start
-    print(f"it took {time:.4f} second")
+    time_ran = end - start
+    print(f"it took {time_ran:.4f} second")

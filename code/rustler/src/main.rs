@@ -1,4 +1,4 @@
-mod logic;
+use rustler::{entropy};
 use std::fs;
 use std::io;
 use std::time::{Instant};
@@ -25,7 +25,7 @@ fn main() -> io::Result<()> {
         .map(|s| s.trim().to_lowercase())
         .collect();
 
-    let best_guess = logic::entropy(&answers_vec, &guess_vec);
+    let best_guess = entropy(&answers_vec, &guess_vec);
     
     println!("{}", best_guess);
     let duration = start.elapsed();

@@ -1,5 +1,6 @@
 import logic
 import random
+import time
 
 def run_simulation(runs, master_answers, guess_list, strategy_func):
     """
@@ -70,6 +71,7 @@ def run_simulation(runs, master_answers, guess_list, strategy_func):
 
 # --- Main ---
 def main():
+    start = time.time()
     try:
         with open("word_list.txt", 'r') as f:
             master_answers = [line.strip().lower() for line in f]
@@ -99,12 +101,13 @@ def main():
     print("\n--- Running Top 1 (Pure Entropy) Strategy ---")
     score_top1 = run_simulation(runs, master_answers, guess_list, logic.entropy)
     
-    print("\n--- Running Top 4 (Hard Mode) Strategy ---")
-    score_top4 = run_simulation(runs, master_answers, guess_list, logic.find_top4) 
-
+    #print("\n--- Running Top 4 (Hard Mode) Strategy ---")
+    #score_top4 = run_simulation(runs, master_answers, guess_list, logic.find_top4) 
+    end = time.time()
     print("\n--- Final Results ---")
     print(f"Avg. Score (Top 1 Strategy): {score_top1:.4f}")
-    print(f"Avg. Score (Top 4 Strategy): {score_top4:.4f}")
-
+    #print(f"Avg. Score (Top 4 Strategy): {score_top4:.4f}")
+    running_time = end - start
+    print(f"it took {running_time:.4f} seconds")
 if __name__ == "__main__":
     main()
