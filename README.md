@@ -215,9 +215,8 @@ After adding these changes, the average of tries per word obtained by running th
 ![enhanced results](pics/enhanced_results.png)
 
 This means that the added probability criteria improved the bot in approximately:
-$$
-\frac{3.5607 - 3.4740}{3.5607} \approx 2.43 \%
-$$
+
+$$\frac{3.5607 - 3.4740}{3.5607} \approx 2.43\\%$$
 
 ---
 
