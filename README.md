@@ -158,4 +158,53 @@ cargo run --bin simulation
 ```
 You'll then be prompted for the number of runs you want to do, if it is less the entire list of possible answers they'll be random.
 
-If you have any suggestions or other applications for this please let me now!
+# Probability enhanced Shannon's entropy analysis
+
+### The Limitation of Pure Entropy ("The Scientist")
+Standard information-theoretic solvers maximize **Shannon Entropy**:
+$$H(x) = -\sum p(x) \log_2 p(x)$$
+
+This treats the search space as a **Uniform Distribution**. The solver prioritizes words that split the dictionary efficiently, even if those words are linguistically obscure. This results in efficient narrowing but fails to capitalize on highly probable answers in the mid-game.
+
+Following the approach of the video mentioned previously, the entropy analysis can be enhanced taking the "likelyness" of each word and inputing as a new factor to rank how good each word is as a guess.
+
+---
+
+## ⚙️ Methodology
+
+### The Utility Function (Score Addition)
+To implement this, a linear combination of entropy and probability is used.**Addition** is used rather than Multiplication because the objectives are distinct: a word is valuable if it provides information **OR** if it is the answer.
+
+$$Score(w) = E[\text{Information}] + P(w \text{ is Answer})$$
+
+### Sigmoid Frequency Weighting
+Raw word frequency follows a Zipfian distribution, which is ill-suited for linear scoring. We map raw counts to a normalized probability score $[0, 1]$ using a tuned **Sigmoid Function**:
+
+$$P(w) = \frac{1}{1 + e^{-\frac{\log_{10}(\text{count}) - C}{W}}}$$
+
+**Hyperparameter Calibration:**
+* **Center ($C=4.5$):** Tuned to the "Internet Scale." Words with $10^{4.5}$ occurrences (~30k) represent the crossover point between "Obscure" and "Common."
+* **Width ($W=2.0$):** A "Gentle Curve" selected to prevent the "Arrogance Trap." It ensures rare valid answers (e.g., `WOOER`) retain a non-zero probability mass ($\approx 0.35$), preventing the bot from ignoring them in random simulations.
+
+The list containing the probability of each word can be accesed [here](/code/Pyther/lists/most_used_words_EN.txt)
+
+![sigmoid function](pics/sigmoid.png)
+
+### Candidate Re-Ranking
+The utility function re-ranks candidates to favor "Human-Optimal" guesses without sacrificing mathematical rigor. Note how `LEAST` jumps in rank due to its high probability mass.
+
+| Rank | Word | Final Score | Entropy ($E$) | Prob Mass ($P$) | Insight |
+|:---|:---|:---|:---|:---|:---|
+| 1 | **raise** | **6.6813** | 5.8772 | 0.8041 | Best Splitter |
+| 2 | **trace** | 6.6103 | 5.8272 | 0.7831 | Balanced |
+| 3 | **least** | 6.6087 | 5.7539 | **0.8548** | **Probability Boost** |
+| 4 | **slate** | 6.5975 | 5.8585 | 0.7390 | Strong Opener |
+| 5 | **arise** | 6.5876 | 5.8172 | 0.7704 | Good Splitter |
+| 6 | **alert** | 6.5605 | 5.7421 | 0.8184 | Balanced |
+| 7 | **later** | 6.5555 | 5.7081 | **0.8474** | High Frequency |
+| 8 | **crate** | 6.5483 | 5.8304 | 0.7179 | Good Splitter |
+
+---
+
+# Machine Learning approach
+**TODO**
