@@ -204,6 +204,19 @@ The utility function re-ranks candidates to favor "Human-Optimal" guesses withou
 | 7 | **later** | 6.5555 | 5.7081 | **0.8474** | High Frequency |
 | 8 | **crate** | 6.5483 | 5.8304 | 0.7179 | Good Splitter |
 
+## Results
+
+After adding these changes, the average of tries per word obtained by running the simulation were the following:
+
+|Pure Shannon | Enhanced Shannon |
+| :--- | :--- |
+| 3.5607 (tries per word) | 3.4740 (tries per word) |
+
+![enhanced results](pics/enhanced_results.pn)
+
+This means that the added probability criteria improved the bot in approximately:
+$$\frac{3.5607 - 3.4740}{3.5607}\cdot 100\% \approx 2.43\%$$
+
 ---
 
 # Machine Learning approach
