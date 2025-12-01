@@ -239,7 +239,7 @@ After running the dataset through, it is possible to graph the "weight" of each 
 Once a relation between the factors is found, it is possible to define the ranges of operation to apply weights. The data generated, was put through random forest for each interval recording the relation between entropy and probability mass.
 
 |STAGE                     | ENTROPY IMP     | PROB IMP        | REC. WEIGHTS (E:P)
-|:---:---:---:---
+|:---|:---|:---|:---
 |EARLY GAME (>100 words)   | 0.4298          | 0.5702        | 0.43 : 0.57
 |MID GAME (10-100 words)   | 0.6460          | 0.3540        | 0.65 : 0.35
 |END GAME (<10 words)      | 0.6798          | 0.3202        | 0.68 : 0.3202
@@ -267,7 +267,7 @@ Revising the new entropy + probability mass list, results changed from previous 
 
 Now using this new data, results were improved.
 
-![best](pic/best_heuristic.png)
+![best](pics/best_heuristic.png)
 
 ## Conclussion 
 
@@ -277,4 +277,4 @@ That being said, this section further validates the first and second approach.
 
 ## Reinforced Learning
 
-****
+**TODO**
