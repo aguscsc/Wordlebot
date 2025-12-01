@@ -212,7 +212,7 @@ After adding these changes, the average of tries per word obtained by running th
 | :--- | :--- |
 | 3.5607 (tries per word) | 3.4740 (tries per word) |
 
-![enhanced results](pics/enhanced_results.png)
+![enhanced results](pics/enhanced_result.png)
 
 This means that the added probability criteria improved the bot in approximately:
 
