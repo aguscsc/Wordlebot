@@ -47,7 +47,7 @@ This can be checked running the script [logic.py](/code/logic.py). (there are tw
 ### Simulation
 For this section, two ways of implementing entropy to the best guess were applied, one were the bot always chose the highest entropy option and one where the bot chose one of the top 4.
 
-Both methods were ran through the 2331 possible answers in which the bot always got to the answer, giving the following results.
+Both methods were run through the 2331 possible answers in which the bot always got to the answer, giving the following results.
 
 ![results_all_answers](/pics/top1vstop4.png)
 
@@ -221,4 +221,60 @@ $$\frac{3.5607 - 3.4740}{3.5607} \approx 2.43\\%$$
 ---
 
 # Machine Learning approach
-**TODO**
+
+To try to improve the current performance, it is possible to define weights for the entropy and probability mass components. To do this, the random forest algorithm was implemented, feeding it a simulation of all possible games. 
+
+### Random Forest
+
+Random forest is a meta-estimator that fits a number of classifying decision trees on various sub-samples of the dataset and uses averaging to improve predictive accuracy and control over-fitting. In this project, it was deployed not as the primary agent, but as an analytical tool to reverse-engineer the correlation between the bot's decision variables and win-speed.
+
+![Random forest](pics/random.png)
+
+After running the dataset through, it is possible to graph the "weight" of each factor, this analysis was made showing from turn 2 and forward due to the "hardcoded" nature of the first turn. The results were the following:
+
+![random analysis](pics/importance.png)
+
+### Finding weights
+
+Once a relation between the factors is found, it is possible to define the ranges of operation to apply weights. The data generated, was put through random forest for each interval recording the relation between entropy and probability mass.
+
+|STAGE                     | ENTROPY IMP     | PROB IMP        | REC. WEIGHTS (E:P)
+|:---:---:---:---
+|EARLY GAME (>100 words)   | 0.4298          | 0.5702        | 0.43 : 0.57
+|MID GAME (10-100 words)   | 0.6460          | 0.3540        | 0.65 : 0.35
+|END GAME (<10 words)      | 0.6798          | 0.3202        | 0.68 : 0.3202
+
+$$Score(w) = W_E \cdot E[\text{Information}] + W_P \cdot P(w \text{ is Answer})$$
+
+### Scalar Normalization
+
+Before applying these weights, it was necessary to address a **Unit Mismatch**. Entropy values range from $0$ to $6$ bits, while Probability Mass ranges from $0$ to $1$. To make these terms comparable, we performed a parameter sweep to find an optimal **Normalization Scalar** for the probability component.
+
+![scalars](pics/best_scalar1.png)
+
+### First result
+
+After defining this, the improvements were marginal, going from $3.474$ to $3.4723$ tries per word.
+
+![first ml](pics/first_ml.png)
+
+### Best opener
+
+Revising the new entropy + probability mass list, results changed from previous lists. Taking this in consideration, 12 openers were run through a simulation using the new weights and scalar to determine the best opener overall.
+
+![aaaaaa](pics/best_opener.png)
+
+
+Now using this new data, results were improved.
+
+![best](pic/best_heuristic.png)
+
+## Conclussion 
+
+Having this new best opener word, the second approach (enhanced shannon) was modified to use the new best opener, obtaining the same results as the random forest approach. Therefore the weights approach, while valid, does not offer any crucial improvements over the existing enhanced shannon approach.
+
+That being said, this section further validates the first and second approach.
+
+## Reinforced Learning
+
+****

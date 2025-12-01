@@ -15,7 +15,6 @@ import kli_logic as logic
 
 # CONFIGURATION
 OUTPUT_FILE = "bot_decision_data.csv"
-NUM_GAMES = 1000
 
 
 def run_data_generation():
@@ -30,7 +29,8 @@ def run_data_generation():
     with open(possible_list, "r") as f:
         guesses = [line.strip().lower() for line in f]
 
-    print(f"Simulating {NUM_GAMES} games to build XAI dataset...")
+    runs = int(input("input how many games: "))
+    print(f"Simulating {runs} games to build XAI dataset...")
 
     # 2. Prepare CSV Writer
     # We capture the "State" (Context) and the "Action" (Metrics of the chosen word)
@@ -48,15 +48,18 @@ def run_data_generation():
 
     data_rows = []
 
-    for game_id in range(NUM_GAMES):
-        answer = random.choice(master_answers)
+    for game_id in range(runs):
+        if runs == 2331:
+            answer = master_answers[game_id]
+        else:
+            answer = random.choice(master_answers)
         current_answers = list(master_answers)
 
         # Track the game history to save later
         game_moves = []
 
         # Hardcoded Turn 1 (We don't analyze this because it's static)
-        best_guess = "raise"
+        best_guess = "slate"
 
         turn = 1
         while turn <= 6:
