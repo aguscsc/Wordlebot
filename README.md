@@ -1,5 +1,9 @@
 # Wordlebot
-This repository contains the development of a bot that plays wordle as a personal project.
+This repository contains the development of a bot that plays wordle as a personal project. 
+
+The project explores the intersection of Information Theory, Heuristic Control, and Machine Learning to solve discrete search problems under resource constraints.
+
+This documentation provides a comprehensive comparative analysis of these methodologies, establishing rigorous benchmarks to evaluate the trade-offs between computational complexity and solution efficiency (average guesses).
 ## Acknowledgements
 
 The core algorithm and information theory approach for this Wordle solver were heavily inspired by 3Blue1Brown's video, "[Solving Wordle using information theory](https://www.youtube.com/watch?v=v68zYyaEmEA)".(Highly recommend watching it, really fun video)
