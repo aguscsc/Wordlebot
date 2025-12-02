@@ -58,7 +58,7 @@ class WordleEnv:
             # Reset Mask
             self.guessed_mask = np.zeros(len(self.full_answers), dtype=bool)
             
-            # --- THE FIX: ARTIFICIAL CONSTRAINT ---
+            # --- ARTIFICIAL CONSTRAINT ---
             # If we are in Easy Mode, force the bot to only pick from the Easy List.
             # We do this by marking all "Hard Words" as ALREADY GUESSED.
             if len(self.answers) < 1000: # Heuristic check for Easy Mode
@@ -79,35 +79,22 @@ class WordleEnv:
             self.attempts += 1
             self.guessed_mask[action_idx] = True
             
-            # 1. CALCULATE INTERMEDIATE REWARD (The "Cookies")
-            # Initialize step_reward here!
-            step_reward = 0
             
             # We need the pattern to calculate colors
             pattern = logic.get_pattern(guess, self.target_word)
             
-            # Check colors and add bonuses
-            for i, char in enumerate(guess):
-                if pattern[i] == 2:   # Green
-                    step_reward += 3  
-                elif pattern[i] == 1: # Yellow
-                    step_reward += 1  
-
-            # Base penalty for time (-1) plus cookies
-            # This means a guess with 2 greens (+6) results in a +5 reward for the step!
-            current_step_score = -1 + step_reward
 
             # 2. WIN CONDITION
             if guess == self.target_word:
                 self.game_over = True
                 # Huge Win Bonus (100) + The points for the final correct letters
-                final_reward = 100 + current_step_score
+                final_reward = 100 + ((6 - self.attempts)*10)
                 return self.get_state(), final_reward, True
 
             # 3. LOSE CONDITION
             if self.attempts >= 6:
                 self.game_over = True
-                return self.get_state(), -50, True
+                return self.get_state(), -100, True
 
             # 4. UPDATE STATE (Neural Net Inputs)
             for i, char in enumerate(guess):
@@ -119,4 +106,4 @@ class WordleEnv:
                 self.alphabet_state[char_idx, nn_status] = 1.0
 
             # Return state and the calculated intermediate reward
-            return self.get_state(), current_step_score, False
+            return self.get_state(), -1, False

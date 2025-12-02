@@ -34,8 +34,15 @@ def run_rl_simulation(num_games="ALL"):
         print("Error: 'wordle_dqn.pth' not found. Train the model first!")
         return
 
-    model.load_state_dict(torch.load(model_path, map_location=device))
+    checkpoint = torch.load(model_path, map_location=device)
+    
+    # Handle both new (dictionary) and old (raw weights) formats
+    if isinstance(checkpoint, dict) and 'model_state_dict' in checkpoint:
+        model.load_state_dict(checkpoint['model_state_dict'])
+    else:
+        model.load_state_dict(checkpoint)
     model.eval() # Set to evaluation mode (turns off dropout/batchnorm behavior)
+
     print("Model loaded successfully.")
 
     # 3. Determine Targets

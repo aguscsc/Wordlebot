@@ -2,12 +2,11 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 import random
-import numpy as np
 import os
-import sys
 from collections import deque
 from rl import WordleEnv
 import csv
+import kli_optimized as logic
 
 # --- HYPERPARAMETERS ---
 BATCH_SIZE = 512 # Increased for GPU utilization
@@ -18,7 +17,9 @@ EPSILON_END = 0.05
 EPSILON_DECAY = 0.99998
 MEMORY_SIZE = 100000
 TARGET_UPDATE = 500
-
+WARMUP = 1000
+TOTAL_EPISODES = 200000
+TEACHER_RATE = 0.5
 
 # --- THE BRAIN ---
 class DQN(nn.Module):
@@ -43,15 +44,21 @@ def train():
     n_actions = len(env.answers)
     
     policy_net = DQN(104, n_actions).to(device)
-    
+    start_episode = 1  # Default if no save exists
+    logic.load_weights("kli_words.txt",logic.LISTS_DIR)
+
     # RESUME LOGIC
     if os.path.exists("wordle_dqn.pth"):
         print("Loading existing model...")
-        try:
-            policy_net.load_state_dict(torch.load("wordle_dqn.pth", map_location=device))
-            EPSILON_START = 0.1 
-        except:
-            print("Model corrupted. Starting fresh.")
+        checkpoint = torch.load("wordle_dqn.pth", map_location=device)
+        
+        # Load weights
+        policy_net.load_state_dict(checkpoint['model_state_dict'])
+        
+        # Load progress
+        start_episode = checkpoint['episode'] + 1
+        epsilon = checkpoint['epsilon']
+        print(f"Resuming from Episode {start_episode}, Epsilon {epsilon:.3f}")
 
     target_net = DQN(104, n_actions).to(device)
     target_net.load_state_dict(policy_net.state_dict())
@@ -71,26 +78,40 @@ def train():
     env.set_difficulty("easy")
     current_mode = "easy"
     
-    # 2. PERFORMANCE TRACKER (Last 100 games)
-    recent_rewards = deque(maxlen=100)
+    # 2. PERFORMANCE TRACKER (Last 1000 games)
+    recent_rewards = deque(maxlen=1000)
     
     try:
-        for episode in range(1, 200001): 
+        for episode in range(start_episode, TOTAL_EPISODES): 
             state = env.reset().to(device)
             total_reward = 0
+            current_candidates = list(env.answers)
+            teacher_guess = "slate"
             
             # Warmup Period
-            if episode < 1000:
+            if episode < WARMUP:
                 epsilon = 1.0
 
             while True:
                 # --- ACTION SELECTION ---
                 mask_tensor = torch.tensor(env.guessed_mask, device=device, dtype=torch.bool)
-                
-                if random.random() < epsilon:
-                    valid_indices = (~env.guessed_mask).nonzero()[0]
-                    if len(valid_indices) == 0: break 
-                    action_idx = random.choice(valid_indices)
+                # Teacher and epsilon logic
+                is_exploring = random.random() < epsilon
+               
+                if is_exploring:
+                    if random.random() < TEACHER_RATE:
+                        if len(current_candidates)>0:
+                            word_choice = logic.entropy(current_candidates, env.full_answers)
+                            action_idx = env.word_to_idx[word_choice]
+                        else:    
+                            valid_indices = (~env.guessed_mask).nonzero()[0]
+                            if len(valid_indices) == 0: break 
+                            action_idx = random.choice(valid_indices)
+                    
+                    else:
+                        valid_indices = (~env.guessed_mask).nonzero()[0]
+                        if len(valid_indices) == 0: break 
+                        action_idx = random.choice(valid_indices)
                 else:
                     with torch.no_grad():
                         q_values = policy_net(state.unsqueeze(0))
@@ -101,6 +122,11 @@ def train():
                 next_state, reward, done = env.step(action_idx)
                 next_state = next_state.to(device)
                 total_reward += reward
+
+                # --- Update teacher ---
+                guess_word = env.idx_to_word[action_idx]
+                pat = logic.get_pattern(guess_word, env.target_word)
+                current_candidates = logic.update(guess_word, pat, current_candidates)
                 
                 # --- MEMORY ---
                 memory.append((state, action_idx, reward, next_state, done))
@@ -147,8 +173,8 @@ def train():
             avg_reward = sum(recent_rewards) / len(recent_rewards) if recent_rewards else 0
             
             # --- AUTO-PROMOTION LOGIC ---
-            # If we are in Easy Mode and averaging > 50 reward over last 100 games
-            if current_mode == "easy" and avg_reward > 50 and episode > 1000:
+            # If we are in Easy Mode and averaging > 50 reward over last 1000 games
+            if current_mode == "easy" and avg_reward > 50 and episode > 1000 and epsilon < 0.5:
                 print(f"\n>>> GRADUATION! Bot mastered Easy Mode (Avg: {avg_reward:.2f}). Switching to HARD MODE. <<<")
                 env.set_difficulty("hard")
                 current_mode = "hard"
@@ -165,10 +191,15 @@ def train():
         print("\nInterrupted by user.")
     
     finally:
-        print("Saving Model...")
-        torch.save(policy_net.state_dict(), "wordle_dqn.pth")
-        print("Model Saved.")
-        log_file.close()
+            print("Saving Model...")
+            # Save a DICT containing weights AND metadata
+            checkpoint = {
+                'model_state_dict': policy_net.state_dict(),
+                'episode': episode,
+                'epsilon': epsilon
+            }
+            torch.save(checkpoint, "wordle_dqn.pth")
+            print(f"Model Saved at Episode {episode}.")
 
 if __name__ == "__main__":
     train()
