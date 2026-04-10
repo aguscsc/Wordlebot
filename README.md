@@ -279,6 +279,4 @@ Having this new best opener word, the second approach (enhanced shannon) was mod
 
 That being said, this section further validates the first and second approach.
 
-## Deep Reinforced Learning (DQN)
-
-**TODO**
+---
